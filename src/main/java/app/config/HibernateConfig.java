@@ -37,16 +37,10 @@ public class HibernateConfig {
         return emfTest;
     }
 
-    // TODO: IMPORTANT: Add Entity classes here for them to be registered with Hibernate
-    private static void getAnnotationConfiguration(Configuration configuration) {
-        // configuration.addAnnotatedClass(Point.class);
-    }
-
     private static EntityManagerFactory createEMF(boolean forTest) {
         try {
             Configuration configuration = new Configuration();
             Properties props = new Properties();
-            // Set the properties
             setBaseProperties(props);
             if (forTest) {
                 props = setTestProperties(props);
@@ -56,7 +50,6 @@ public class HibernateConfig {
                 props = setDevProperties(props);
             }
             configuration.setProperties(props);
-            getAnnotationConfiguration(configuration);
 
             ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                     .applySettings(configuration.getProperties())
@@ -73,7 +66,7 @@ public class HibernateConfig {
 
     private static Properties setBaseProperties(Properties props) {
         props.put("hibernate.connection.driver_class", "org.postgresql.Driver");
-        props.put("hibernate.hbm2ddl.auto", "create");  // set to "update" when in production
+        props.put("hibernate.hbm2ddl.auto", "update");  // Use 'update' for development
         props.put("hibernate.current_session_context_class", "thread");
         props.put("hibernate.show_sql", "false");
         props.put("hibernate.format_sql", "false");
@@ -106,7 +99,7 @@ public class HibernateConfig {
         props.put("hibernate.connection.password", "postgres");
         props.put("hibernate.archive.autodetection", "class");
         props.put("hibernate.show_sql", "true");
-        props.put("hibernate.hbm2ddl.auto", "create-drop"); // update for production
+        props.put("hibernate.hbm2ddl.auto", "create-drop");
         return props;
     }
 }

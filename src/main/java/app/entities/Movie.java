@@ -1,18 +1,27 @@
 package app.entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
+
+import java.time.LocalDate;
 
 @Entity
-@Data
-@Table(name = "movies")
+@Table(name = "movie")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Movie {
+
     @Id
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String title;
+    private LocalDate releaseDate;
     private String overview;
-    private String releaseDate;
     private double voteAverage;
     private String posterPath;
+    private String genre;
 }
