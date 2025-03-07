@@ -8,11 +8,10 @@ import java.time.format.DateTimeParseException;
 
 public class Utils {
     public static Movie convertToEntity(MovieDTO dto) {
-        // Handle releaseDate parsing safely to avoid NullPointerException
         LocalDate releaseDate = null;
         if (dto.getReleaseDate() != null) {
             try {
-                releaseDate = LocalDate.parse(dto.getReleaseDate());  // Parse releaseDate if it's not null
+                releaseDate = LocalDate.parse(dto.getReleaseDate());
             } catch (DateTimeParseException e) {
                 System.out.println("Invalid date format for movie: " + dto.getTitle());
             }
@@ -21,8 +20,10 @@ public class Utils {
         return Movie.builder()
                 .title(dto.getTitle())
                 .overview(dto.getOverview())
-                .releaseDate(releaseDate)  // Set the releaseDate if valid, otherwise null
-                .voteAverage(dto.getVoteAverage())  // Use voteAverage as before
+                .releaseDate(releaseDate)
+                .genre(dto.getGenre())  // Handle genre
+                .posterPath(dto.getPosterPath())  // Handle posterPath
+                .voteAverage(dto.getVoteAverage())
                 .build();
     }
 }

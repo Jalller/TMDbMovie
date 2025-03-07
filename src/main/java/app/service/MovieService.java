@@ -23,15 +23,22 @@ public class MovieService {
         this.movieRepository = movieRepository;
     }
 
-    // Fetch movies from TMDb API
     public List<MovieDTO> fetchPopularMoviesFromTMDb() {
         String url = "https://api.themoviedb.org/3/movie/popular?api_key=" + tmdbApiKey;
         RestTemplate restTemplate = new RestTemplate();
         MovieResponse response = restTemplate.getForObject(url, MovieResponse.class);
+
+        // Log the fetched response for debugging
+        if (response != null) {
+            response.getResults().forEach(movie -> {
+                System.out.println("Fetched movie: " + movie.getTitle() + ", Release Date: " + movie.getReleaseDate());
+                System.out.println("Genre: " + movie.getGenre());
+                System.out.println("Poster Path: " + movie.getPosterPath());
+            });
+        }
         return response != null ? response.getResults() : List.of();
     }
 
-    // Save Movies to Database
     public void saveMovies(List<MovieDTO> movieDTOs) {
         List<Movie> movies = movieDTOs.stream()
                 .map(Utils::convertToEntity)
