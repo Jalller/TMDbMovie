@@ -16,6 +16,7 @@ public class MovieController {
         this.movieService = movieService;
     }
 
+    // Endpoint to fetch popular movies
     @GetMapping("/fetch")
     public List<MovieDTO> fetchMovies() {
         return movieService.fetchPopularMoviesFromTMDb();
