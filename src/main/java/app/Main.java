@@ -5,8 +5,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 @SpringBootApplication
+@EntityScan(basePackages = "app.entities") // 👈 Ensures Movie entity is detected
 public class Main {
 
     private final MovieService movieService;
@@ -22,13 +24,14 @@ public class Main {
     @Bean
     public CommandLineRunner run() {
         return args -> {
-            System.out.println("===== Application Started =====");
+            System.out.println("===== Fetching Movies from TMDb =====");
 
-            movieService.fetchPopularMoviesFromTMDb().forEach(movieDTO -> {
-                System.out.println("Title: " + movieDTO.getTitle() + ", Release Date: " + movieDTO.getReleaseDate());
-            });
+            var movieDTOs = movieService.fetchPopularMoviesFromTMDb();
 
-            System.out.println("===== Application Finished =====");
+            System.out.println("===== Saving Movies to Database =====");
+            movieService.saveMovies(movieDTOs);
+
+            System.out.println("✅ Movies Fetched & Saved Successfully!");
         };
     }
 }

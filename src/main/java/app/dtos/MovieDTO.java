@@ -1,20 +1,11 @@
 package app.dtos;
 
-import lombok.*;
+import lombok.Data;
 
-import java.time.LocalDate;
-
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Data
 public class MovieDTO {
-    private int id;
     private String title;
-    private LocalDate releaseDate;
-    private String genre;
-    private double voteAverage;
-    private String posterPath;
     private String overview;
+    private String releaseDate;
+    private Double voteAverage;
 }

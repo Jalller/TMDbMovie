@@ -1,26 +1,28 @@
 package app.utils;
 
-import app.exceptions.ApiException;
+import app.dtos.MovieDTO;
+import app.entities.Movie;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 public class Utils {
-
-    public static String getPropertyValue(String propName, String resourceName)  {
-        try (InputStream is = Utils.class.getClassLoader().getResourceAsStream(resourceName)) {
-            Properties prop = new Properties();
-            prop.load(is);
-
-            String value = prop.getProperty(propName);
-            if (value != null) {
-                return value.trim();  // Trim whitespace
-            } else {
-                throw new ApiException(500, String.format("Property %s not found in %s", propName, resourceName));
+    public static Movie convertToEntity(MovieDTO dto) {
+        // Handle releaseDate parsing safely to avoid NullPointerException
+        LocalDate releaseDate = null;
+        if (dto.getReleaseDate() != null) {
+            try {
+                releaseDate = LocalDate.parse(dto.getReleaseDate());  // Parse releaseDate if it's not null
+            } catch (DateTimeParseException e) {
+                System.out.println("Invalid date format for movie: " + dto.getTitle());
             }
-        } catch (IOException ex) {
-            throw new ApiException(500, String.format("Could not read property %s.", propName));
         }
+
+        return Movie.builder()
+                .title(dto.getTitle())
+                .overview(dto.getOverview())
+                .releaseDate(releaseDate)  // Set the releaseDate if valid, otherwise null
+                .voteAverage(dto.getVoteAverage())  // Use voteAverage as before
+                .build();
     }
 }
