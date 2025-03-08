@@ -14,13 +14,12 @@ import java.util.stream.Collectors;
 @Service
 public class MovieService {
 
-    @Value("${tmdb.api.key}")
-    private String tmdbApiKey;
-
     private final MovieRepository movieRepository;
+    private final String tmdbApiKey;
 
-    public MovieService(MovieRepository movieRepository) {
+    public MovieService(MovieRepository movieRepository, @Value("${TMDB_API_KEY}") String tmdbApiKey) {
         this.movieRepository = movieRepository;
+        this.tmdbApiKey = tmdbApiKey;
     }
 
     public List<MovieDTO> fetchPopularMoviesFromTMDb() {
@@ -28,13 +27,15 @@ public class MovieService {
         RestTemplate restTemplate = new RestTemplate();
         MovieResponse response = restTemplate.getForObject(url, MovieResponse.class);
 
-        // Log the fetched response for debugging
         if (response != null) {
-            response.getResults().forEach(movie -> {
-                System.out.println("Fetched movie: " + movie.getTitle() + ", Release Date: " + movie.getReleaseDate());
+            for (MovieDTO movie : response.getResults()) {
+                System.out.println("Fetched Movie: " + movie.getTitle());
+                System.out.println("Overview: " + movie.getOverview());
+                System.out.println("Release Date: " + movie.getReleaseDate());
                 System.out.println("Genre: " + movie.getGenre());
                 System.out.println("Poster Path: " + movie.getPosterPath());
-            });
+                System.out.println("-------------------------------------");
+            }
         }
         return response != null ? response.getResults() : List.of();
     }
@@ -43,13 +44,18 @@ public class MovieService {
         List<Movie> movies = movieDTOs.stream()
                 .map(Utils::convertToEntity)
                 .collect(Collectors.toList());
+
         for (Movie movie : movies) {
-            if (movie.getTitle() != null && movie.getTitle().length() > 255) {
-                movie.setTitle(movie.getTitle().substring(0, 255)); // Truncate if too long
+            if (movie.getTitle() == null) {
+                System.out.println("⚠️ Warning: Movie has no title!");
             }
-            if (movie.getOverview() != null && movie.getOverview().length() > 255) {
-                movie.setOverview(movie.getOverview().substring(0, 255)); // Truncate if too long
+            if (movie.getOverview() == null) {
+                System.out.println("⚠️ Warning: Movie " + movie.getTitle() + " has no overview!");
             }
+            if (movie.getReleaseDate() == null) {
+                System.out.println("⚠️ Warning: Movie " + movie.getTitle() + " has no release date!");
+            }
+
             movieRepository.save(movie);  // Save movie to DB
         }
     }
