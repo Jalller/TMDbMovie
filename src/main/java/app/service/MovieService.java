@@ -4,11 +4,13 @@ import app.dtos.MovieDTO;
 import app.dtos.MovieResponse;
 import app.entities.Movie;
 import app.repository.MovieRepository;
+import app.utils.Utils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MovieService {
@@ -25,50 +27,42 @@ public class MovieService {
     public List<MovieDTO> fetchPopularMoviesFromTMDb() {
         String url = "https://api.themoviedb.org/3/movie/popular?api_key=" + tmdbApiKey;
         RestTemplate restTemplate = new RestTemplate();
+
+        String rawJsonResponse = restTemplate.getForObject(url, String.class);
+        System.out.println("Raw TMDb API Response: " + rawJsonResponse); // Debugging: Print full JSON response
+
         MovieResponse response = restTemplate.getForObject(url, MovieResponse.class);
 
         if (response != null) {
-            // Log the full response to inspect the data structure
-            System.out.println("TMDb Response: " + response); // Debugging: Check the response structure
-
-            // Debugging individual movie fields
-            for (MovieDTO movie : response.getResults()) {
-                System.out.println("Fetched Movie: " + movie.getTitle());
-                System.out.println("Overview: " + movie.getOverview());
-                System.out.println("Release Date: " + movie.getReleaseDate());
-                System.out.println("Genre: " + movie.getGenre());
-                System.out.println("Poster Path: " + movie.getPosterPath());
-                System.out.println("-------------------------------------");
-            }
+            System.out.println("Parsed MovieResponse: " + response); // Debugging: Check parsed response
         }
+
         return response != null ? response.getResults() : List.of();
     }
-
-    // Save movies to the database
     public void saveMovies(List<MovieDTO> movieDTOs) {
-        // Save the movies using the repository, Hibernate will take care of the mapping.
-        movieDTOs.forEach(this::saveMovie);
+        for (MovieDTO dto : movieDTOs) {
+            saveMovie(dto);
+        }
     }
 
-    // Let Hibernate handle entity creation and persistence
+
     private void saveMovie(MovieDTO movieDTO) {
-        Movie movie = new Movie();
-        movie.setTitle(movieDTO.getTitle());
-        movie.setOverview(movieDTO.getOverview());
-        movie.setGenre(movieDTO.getGenre());
-        movie.setPosterPath(movieDTO.getPosterPath());
-        movie.setVoteAverage(movieDTO.getVoteAverage());
+        Movie movie = Utils.convertToEntity(movieDTO);
+        System.out.println("Saving movie to DB: " + movie); // Debugging: Check movie before saving
 
-        // Parse the release date directly here, and let Hibernate handle the persistence
-        if (movieDTO.getReleaseDate() != null && !movieDTO.getReleaseDate().isEmpty()) {
-            try {
-                movie.setReleaseDate(java.time.LocalDate.parse(movieDTO.getReleaseDate()));
-            } catch (Exception e) {
-                System.out.println("Error parsing release date for movie " + movieDTO.getTitle() + ": " + movieDTO.getReleaseDate());
-            }
-        }
-
-        // Save the movie to the DB using the repository
         movieRepository.save(movie);
+
+        System.out.println("✅ Saved movie: " + movie.getTitle());
+    }
+
+    private Movie convertToEntity(MovieDTO dto) {
+        return Movie.builder()
+                .title(dto.getTitle())
+                .overview(dto.getOverview())
+                .releaseDate(dto.getReleaseDate() != null ? java.time.LocalDate.parse(dto.getReleaseDate()) : null)
+                .posterPath(dto.getPosterPath())
+                .voteAverage(dto.getVoteAverage())
+                .genre(dto.getGenreIds() != null ? dto.getGenreIds().toString() : "Unknown") // Convert genre IDs to String
+                .build();
     }
 }

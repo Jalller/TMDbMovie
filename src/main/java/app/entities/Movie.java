@@ -24,10 +24,10 @@ public class Movie {
     private String overview;
 
     @Column(name = "release_date")
-    private LocalDate releaseDate;  // Ensure this is LocalDate, not String
+    private LocalDate releaseDate;
 
-    @Column(name = "genre", length = 100)
-    private String genre;
+    @Column(name = "genre", length = 255)
+    private String genre; // Stores genres as comma-separated values
 
     @Column(name = "poster_path", length = 1000)
     private String posterPath;

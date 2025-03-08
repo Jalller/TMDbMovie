@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 @SpringBootApplication
-@EntityScan(basePackages = "app.entities") // 👈 Ensures Movie entity is detected
+@EntityScan(basePackages = "app.entities")
 public class Main {
 
     private final MovieService movieService;
