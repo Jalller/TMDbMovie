@@ -2,35 +2,30 @@ package app.dtos;
 
 import app.entities.Genre;
 import lombok.Data;
+import lombok.Setter;
+
 import java.util.List;
 
 @Data
 public class MovieDTO {
     private String title;
     private String overview;
+    @Setter
     private String releaseDate;
     private Double voteAverage;
     private String posterPath;
-    private String genre;
+    private String genre;  // Keep this for simplicity
+    private List<Genre> genres;  // To capture all genres in the response
 
-    private List<Genre> genres; // Store the full list of genres
-
-    // Automatically set the genre from the list
+    // Automatically set the genre from the list of genres in case it's an array or list
     public void setGenres(List<Genre> genres) {
         if (genres != null && !genres.isEmpty()) {
-            this.genre = genres.get(0).getName(); // Set the first genre as default
+            this.genre = genres.get(0).getName();  // We will take the first genre
         } else {
-            this.genre = "Unknown"; // Handle missing genre
+            this.genre = "Unknown";  // Default if no genre is found
         }
     }
+
 }
-
-//    // Add a helper to pick the first genre or map them accordingly
-//    public void setGenres(List<Genre> genres) {
-//        if (!genres.isEmpty()) {
-//            this.genre = genres.get(0).getName(); // Set the first genre name as the genre
-//        }
-//    }
-
 
 

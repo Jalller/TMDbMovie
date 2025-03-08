@@ -24,7 +24,7 @@ public class Movie {
     private String overview;
 
     @Column(name = "release_date")
-    private LocalDate releaseDate;
+    private LocalDate releaseDate;  // Ensure this is LocalDate, not String
 
     @Column(name = "genre", length = 100)
     private String genre;
