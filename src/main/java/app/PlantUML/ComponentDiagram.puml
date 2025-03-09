@@ -1,0 +1,25 @@
+@startuml
+'https://plantuml.com/component-diagram
+
+package "Spring Boot Application" {
+    component MovieService {
+        [Fetch Movies]
+        [Convert DTO]
+        [Save to DB]
+    }
+    component Utils
+    component MovieRepository
+}
+
+component "TMDb API"
+component "Database"
+
+MovieService -> "TMDb API" : Fetches Data
+MovieService -> Utils : Converts DTOs
+MovieService -> MovieRepository : Saves Movies
+MovieRepository -> Database : Inserts Data
+@enduml
+
+* Component Diagram - System Components
+* What it shows:
+  The main components of your application and how they communicate.

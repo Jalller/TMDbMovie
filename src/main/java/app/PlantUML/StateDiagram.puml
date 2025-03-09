@@ -1,0 +1,15 @@
+@startuml
+'https://plantuml.com/state-diagram
+
+[*] --> NewMovie
+NewMovie --> ValidMovie : Data is correct
+ValidMovie --> SavedToDB : Saved successfully
+SavedToDB --> [*]
+NewMovie --> InvalidMovie : Missing Data
+InvalidMovie --> Discarded : Not saved
+Discarded --> [*]
+@enduml
+
+* State Diagram - Movie Entity Lifecycle
+* What it shows:
+  The state changes a Movie entity goes through.

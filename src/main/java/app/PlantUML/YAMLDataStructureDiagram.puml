@@ -1,0 +1,19 @@
+@startyaml
+movies:
+  - title: "The Gorge"
+    overview: "Two highly trained operatives..."
+    release_date: "2025-02-13"
+    genre: ["Action", "Thriller"]
+    poster_path: "/7iMBZzVZtG0oBug4TfqDb9ZxAOa.jpg"
+    vote_average: 7.8
+  - title: "Flight Risk"
+    overview: "A U.S. Marshal escorts a witness..."
+    release_date: "2025-01-22"
+    genre: ["Crime", "Thriller"]
+    poster_path: "/q0bCG4NX32iIEsRFZqRtuvzNCyZ.jpg"
+    vote_average: 6.0
+@endyaml
+
+* YAML Data Structure
+* What it shows:
+  How movie data is structured in YAML format.

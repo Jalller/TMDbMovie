@@ -1,0 +1,21 @@
+@startwbs
+'https://plantuml.com/wbs-diagram
+
+* Movie Application
+** API Integration
+*** Fetch Movies from TMDb
+*** Handle JSON Response
+** Data Processing
+*** Convert JSON to DTO
+*** Convert DTO to Entity
+** Database
+*** Save Movies
+*** Validate Data
+** Debugging
+*** Print API Logs
+*** Handle Errors
+@endwbs
+
+* Work Breakdown Structure (WBS)
+* What it shows:
+  The tasks needed to build this project.

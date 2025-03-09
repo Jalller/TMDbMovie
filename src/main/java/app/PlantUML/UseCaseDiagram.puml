@@ -1,0 +1,22 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+
+
+actor "User" as User
+actor "TMDb API" as API
+actor "Database" as DB
+
+rectangle "Movie Application" {
+    User --> (Fetch Movies)
+    (Fetch Movies) --> API : API Call
+    API --> (Return JSON Data)
+    (Return JSON Data) --> (Convert JSON to DTO)
+    (Convert JSON to DTO) --> (Save Movies to DB)
+    (Save Movies to DB) --> DB : Insert Data
+}
+@enduml
+
+* Use Case Diagram - System Overview
+* What it shows:
+ Actors (User, TMDb API, Database).
+ Use cases (Fetch movies, Convert DTOs, Save to DB).

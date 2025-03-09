@@ -1,0 +1,21 @@
+@startuml
+'https://plantuml.com/activity-diagram-beta
+
+
+start
+:Fetch movies from TMDb API;
+if (API returns valid data?) then (Yes)
+    :Convert JSON to DTO;
+    :Convert DTO to Entity;
+    :Save Movie to DB;
+    :Print Success Message;
+else (No)
+    :Print Error Message;
+endif
+stop
+@enduml
+
+
+* Activity Diagram - Saving Movies
+* What it shows:
+  The step-by-step process for fetching, converting, and saving movies.

@@ -1,0 +1,27 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+actor User
+participant "Main Application" as Main
+participant "MovieService" as Service
+participant "Utils"
+participant "MovieRepository" as Repo
+participant "TMDb API" as API
+
+User -> Main: Start Application
+Main -> Service: fetchPopularMoviesFromTMDb()
+Service -> API: Fetch JSON Data
+API -> Service: Return JSON Data
+Service -> Service: Convert JSON to MovieDTO List
+Service -> Utils: convertToEntity(MovieDTO)
+Utils -> Service: Return Movie Entity
+Service -> Repo: save(Movie)
+Repo -> DB: Insert Movie Data
+DB -> Repo: Success
+Service -> Main: Movies Saved
+@enduml
+
+* Sequence Diagram - Fetching & Saving Movies
+* What it shows:
+ The order of execution when fetching movies from TMDb,
+ converting them, and saving them.

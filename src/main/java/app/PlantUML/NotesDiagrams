@@ -1,0 +1,64 @@
+📌 Explanation of Each Diagram
+✅ 1. Class Diagram
+🔹 Relevance:
+
+Shows the structure of your application, including entities, DTOs, services, and repositories.
+Helps in understanding relationships between classes (e.g., MovieDTO, Movie, MovieService, MovieRepository).
+Essential for maintaining and expanding the project.
+✅ 2. Sequence Diagram
+🔹 Relevance:
+
+Shows how objects interact during movie fetching and saving.
+Helps debug request flow from TMDb API to your database.
+Useful for troubleshooting unexpected behavior.
+✅ 3. Component Diagram
+🔹 Relevance:
+
+Shows how components (MovieService, Utils, MovieRepository, Database, TMDb API) communicate.
+Useful for understanding dependencies and refactoring the project.
+✅ 4. Activity Diagram
+🔹 Relevance:
+
+Represents workflow from fetching movies to saving them in the database.
+Helps in visualizing decision points (e.g., skipping movies with missing data).
+✅ 5. Use Case Diagram
+🔹 Relevance:
+
+Helps understand user interactions, such as fetching and storing movies.
+Useful for high-level project planning.
+✅ 6. Deployment Diagram
+🔹 Relevance:
+
+Shows how the application runs (Spring Boot application, database, external API).
+Helps in understanding server and deployment setup.
+✅ 7. Object Diagram
+🔹 Relevance:
+
+A snapshot of objects at runtime (e.g., Movie, MovieDTO, MovieRepository).
+Useful for debugging and verifying how objects hold data in memory.
+❌ 8. State Diagram
+🔹 NOT RELEVANT
+
+Your application does not have complex states that change over time.
+More useful for applications dealing with state transitions (e.g., login/logout, order status).
+❌ 9. Wireframe Diagram
+🔹 NOT RELEVANT
+
+Only needed if you had a UI (like a web app).
+Your project is backend-focused.
+❌ 10. Mindmap Diagram
+🔹 NOT CRITICAL
+
+Can help with brainstorming project structure, but not necessary for coding.
+❌ 11. Work Breakdown Structure (WBS)
+🔹 NOT CRITICAL
+
+More useful for project management, not necessary for actual implementation.
+❌ 12. YAML Data Diagram
+🔹 NOT RELEVANT
+
+You are using JSON from TMDb API, not YAML.
+❌ 13. EBNF (Extended Backus-Naur Form)
+🔹 NOT RELEVANT
+
+Used for defining programming language grammars, not useful for your project.

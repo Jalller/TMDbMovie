@@ -1,0 +1,23 @@
+@startuml
+'https://plantuml.com/deployment-diagram
+
+
+node "User's Computer" {
+    [Browser]
+}
+
+node "Backend Server" {
+    [Spring Boot App]
+}
+
+node "Database Server" {
+    [Database]
+}
+
+Browser --> "Spring Boot App" : Sends Request
+"Spring Boot App" --> "Database" : Fetches/Saves Movies
+@enduml
+
+* Deployment Diagram - System Deployment
+* What it shows:
+  How your application runs on different servers.
