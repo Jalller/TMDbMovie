@@ -6,8 +6,10 @@ import app.entities.Movie;
 import app.repository.MovieRepository;
 import app.utils.Utils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,6 +47,12 @@ public class MovieService {
         }
     }
 
+    public MovieDTO getMovieById(Long id) {
+        // Fetch movie by ID and return as DTO, otherwise throw 404 error
+        return movieRepository.findById(id)
+                .map(Utils::convertToDTO)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Movie not found"));
+    }
 
     private void saveMovie(MovieDTO movieDTO) {
         Movie movie = Utils.convertToEntity(movieDTO);
@@ -65,4 +73,6 @@ public class MovieService {
                 .genre(dto.getGenreIds() != null ? dto.getGenreIds().toString() : "Unknown") // Convert genre IDs to String
                 .build();
     }
+
+
 }
