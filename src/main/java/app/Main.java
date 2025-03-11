@@ -56,13 +56,24 @@ public class Main {
                         movie.getReleaseDate().toString(),
                         movie.getPosterPath(),
                         movie.getVoteAverage(),
-                        List.of() // Assuming genres are stored differently
+                        List.of(), // Assuming genres are stored differently
+                        false // Default value for isDeleted
                 );
 
                 MovieDTO result = movieService.updateMovie(movie.getId(), updatedMovie);
                 System.out.println("✅ Updated movie: " + result.getTitle());
+
+                // ✅ Testing Soft Delete
+                System.out.println("===== Soft Deleting Movie: " + movie.getTitle() + " (ID: " + movie.getId() + ") =====");
+                movieService.softDeleteMovie(movie.getId());
+                System.out.println("✅ Movie soft deleted");
+
+                // ✅ Testing Hard Delete
+                System.out.println("===== Hard Deleting Movie: " + movie.getTitle() + " (ID: " + movie.getId() + ") =====");
+                movieService.hardDeleteMovie(movie.getId());
+                System.out.println("✅ Movie permanently deleted");
             } else {
-                System.out.println("⚠️ No movies found in database. Update skipped.");
+                System.out.println("⚠️ No movies found in database. Update & delete skipped.");
             }
         };
     }

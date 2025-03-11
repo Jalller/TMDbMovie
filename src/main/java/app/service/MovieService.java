@@ -5,6 +5,7 @@ import app.dtos.MovieResponse;
 import app.entities.Movie;
 import app.repository.MovieRepository;
 import app.utils.Utils;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -68,12 +69,15 @@ public class MovieService {
         return Movie.builder()
                 .title(dto.getTitle())
                 .overview(dto.getOverview())
-                .releaseDate(dto.getReleaseDate()) // ✅ Fixed: Directly assigning LocalDate
+                .releaseDate(dto.getReleaseDate())
                 .posterPath(dto.getPosterPath())
                 .voteAverage(dto.getVoteAverage())
                 .genre(dto.getGenreIds() != null ? dto.getGenreIds().toString() : "Unknown") // Convert genre IDs to String
+                .isDeleted(false) // Ensure default value is set
                 .build();
     }
+
+
     public MovieDTO createMovie(MovieDTO movieDTO) {
         Movie movie = Utils.convertToEntity(movieDTO);
         Movie savedMovie = movieRepository.save(movie);
@@ -85,6 +89,7 @@ public class MovieService {
         movieRepository.save(movie);
         return Utils.convertToDTO(movie);
     }
+
     public MovieDTO updateMovie(Long id, MovieDTO movieDTO) {
         // Check if the movie exists
         Movie existingMovie = movieRepository.findById(id)
@@ -106,5 +111,26 @@ public class MovieService {
         return Utils.convertToDTO(updatedMovie);
     }
 
+    // ✅ Soft Delete (Marks movie as deleted)
+    @Transactional
+    public void softDeleteMovie(Long movieId) {
+        Movie movie = movieRepository.findById(movieId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Movie not found"));
 
+        movie.setDeleted(true);
+        movieRepository.save(movie);
+
+        System.out.println("✅ Soft deleted movie: " + movie.getTitle());
+    }
+
+    // ✅ Hard Delete (Permanently removes movie)
+    @Transactional
+    public void hardDeleteMovie(Long movieId) {
+        if (!movieRepository.existsById(movieId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Movie not found");
+        }
+
+        movieRepository.deleteById(movieId);
+        System.out.println("✅ Hard deleted movie with ID: " + movieId);
+    }
 }

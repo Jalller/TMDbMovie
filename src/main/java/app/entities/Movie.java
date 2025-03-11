@@ -27,11 +27,14 @@ public class Movie {
     private LocalDate releaseDate;
 
     @Column(name = "genre", length = 255)
-    private String genre; // Stores genres as comma-separated values
+    private String genre;
 
-    @Column(name = "poster_path", length = 1000)
+    @Column(name = "poster_path", length = 1000) // ✅ Explicitly map to "poster_path"
     private String posterPath;
 
     @Column(name = "vote_average")
     private Double voteAverage;
+
+    @Column(name = "is_deleted", nullable = false) // ✅ Explicitly map to "is_deleted"
+    private boolean isDeleted = false;
 }

@@ -40,7 +40,7 @@ public class HibernateConfig {
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(EntityManagerFactoryBuilder builder, DataSource dataSource) {
         return builder.dataSource(dataSource)
-                .packages("app.entities") // 👈 FIXED: Ensure Movie entity is recognized
+                .packages("app.entities")
                 .build();
     }
 

@@ -2,10 +2,17 @@ package app.repository;
 
 import app.entities.Movie;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface MovieRepository extends JpaRepository<Movie, Long> {
+
+    // ✅ Find all movies that are NOT deleted
+    @Query("SELECT m FROM Movie m WHERE m.isDeleted = false")
+    List<Movie> findAllActiveMovies();
 }
 
 //The JPA part should be implemented using Entities and DTOs. -
