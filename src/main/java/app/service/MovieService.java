@@ -6,6 +6,7 @@ import app.entities.Movie;
 import app.repository.MovieRepository;
 import app.mappers.MovieMapper;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class MovieService {
 
@@ -25,76 +27,50 @@ public class MovieService {
         this.tmdbApiKey = tmdbApiKey;
     }
 
-    // Fetch popular movies from TMDb API
+    // ✅ Fetch popular movies from TMDb API
     public List<MovieDTO> fetchPopularMoviesFromTMDb() {
         String url = "https://api.themoviedb.org/3/movie/popular?api_key=" + tmdbApiKey;
         RestTemplate restTemplate = new RestTemplate();
 
-        String rawJsonResponse = restTemplate.getForObject(url, String.class);
-        System.out.println("Raw TMDb API Response: " + rawJsonResponse); // Debugging: Print full JSON response
-
         MovieResponse response = restTemplate.getForObject(url, MovieResponse.class);
-
-        if (response != null) {
-            System.out.println("Parsed MovieResponse: " + response); // Debugging: Check parsed response
-        }
 
         return response != null ? response.getResults() : List.of();
     }
 
+    // ✅ Save multiple movies
     public void saveMovies(List<MovieDTO> movieDTOs) {
         for (MovieDTO dto : movieDTOs) {
             saveMovie(dto);
         }
     }
 
+    // ✅ Save a single movie
+    private void saveMovie(MovieDTO movieDTO) {
+        Movie movie = MovieMapper.convertToEntity(movieDTO);
+        movieRepository.save(movie);
+        log.info("✅ Saved movie: {}", movie.getTitle());
+    }
+
+    // ✅ Get movie by ID
     public MovieDTO getMovieById(Long id) {
-        // Fetch movie by ID and return as DTO, otherwise throw 404 error
         return movieRepository.findById(id)
                 .map(MovieMapper::convertToDTO)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Movie not found"));
     }
 
-    private void saveMovie(MovieDTO movieDTO) {
-        Movie movie = MovieMapper.convertToEntity(movieDTO);
-        System.out.println("Saving movie to DB: " + movie); // Debugging: Check movie before saving
-
-        movieRepository.save(movie);
-
-        System.out.println("✅ Saved movie: " + movie.getTitle());
-    }
-
-    private Movie convertToEntity(MovieDTO dto) {
-        return Movie.builder()
-                .title(dto.getTitle())
-                .overview(dto.getOverview())
-                .releaseDate(dto.getReleaseDate())
-                .posterPath(dto.getPosterPath())
-                .voteAverage(dto.getVoteAverage())
-                .genre(dto.getGenreIds() != null ? dto.getGenreIds().toString() : "Unknown") // Convert genre IDs to String
-                .isDeleted(false) // Ensure default value is set
-                .build();
-    }
-
-
-    public MovieDTO createMovie(MovieDTO movieDTO) {
+    // ✅ Add new movie (Fix for missing method)
+    public MovieDTO addMovie(MovieDTO movieDTO) {
         Movie movie = MovieMapper.convertToEntity(movieDTO);
         Movie savedMovie = movieRepository.save(movie);
+        log.info("✅ Added new movie: {}", savedMovie.getTitle());
         return MovieMapper.convertToDTO(savedMovie);
     }
 
-    public MovieDTO addMovie(MovieDTO movieDTO) {
-        Movie movie = MovieMapper.convertToEntity(movieDTO);
-        movieRepository.save(movie);
-        return MovieMapper.convertToDTO(movie);
-    }
-
+    // ✅ Update existing movie
     public MovieDTO updateMovie(Long id, MovieDTO movieDTO) {
-        // Check if the movie exists
         Movie existingMovie = movieRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Movie not found"));
 
-        // Update fields
         existingMovie.setTitle(movieDTO.getTitle());
         existingMovie.setOverview(movieDTO.getOverview());
         existingMovie.setReleaseDate(movieDTO.getReleaseDate());
@@ -102,10 +78,8 @@ public class MovieService {
         existingMovie.setVoteAverage(movieDTO.getVoteAverage());
         existingMovie.setGenre(movieDTO.getGenreIds() != null ? movieDTO.getGenreIds().toString() : "Unknown");
 
-        // Save the updated movie
         Movie updatedMovie = movieRepository.save(existingMovie);
-
-        System.out.println("✅ Updated movie: " + updatedMovie.getTitle());
+        log.info("✅ Updated movie: {}", updatedMovie.getTitle());
 
         return MovieMapper.convertToDTO(updatedMovie);
     }
@@ -118,8 +92,7 @@ public class MovieService {
 
         movie.setDeleted(true);
         movieRepository.save(movie);
-
-        System.out.println("✅ Soft deleted movie: " + movie.getTitle());
+        log.info("✅ Soft deleted movie: {}", movie.getTitle());
     }
 
     // ✅ Hard Delete (Permanently removes movie)
@@ -130,6 +103,6 @@ public class MovieService {
         }
 
         movieRepository.deleteById(movieId);
-        System.out.println("✅ Hard deleted movie with ID: " + movieId);
+        log.info("✅ Hard deleted movie with ID: {}", movieId);
     }
 }
