@@ -4,6 +4,7 @@ import app.dtos.MovieDTO;
 import app.entities.Movie;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,8 +15,7 @@ public class Utils {
     public static Movie convertToEntity(MovieDTO dto) {
         System.out.println("Converting MovieDTO: " + dto);
 
-        // Since releaseDate in MovieDTO is already a LocalDate, we use it directly.
-        LocalDate releaseDate = dto.getReleaseDate();
+        LocalDate releaseDate = parseDate(String.valueOf(dto.getReleaseDate()));
 
         Movie movie = Movie.builder()
                 .title(dto.getTitle() != null ? dto.getTitle() : "Untitled")
@@ -35,26 +35,42 @@ public class Utils {
         return MovieDTO.builder()
                 .title(movie.getTitle())
                 .overview(movie.getOverview())
-                .releaseDate(String.valueOf(movie.getReleaseDate())) // ✅ Fixed: Using LocalDate directly
+                .releaseDate(movie.getReleaseDate() != null ? movie.getReleaseDate().toString() : null)
                 .posterPath(movie.getPosterPath())
                 .voteAverage(movie.getVoteAverage())
                 .genreIds(convertGenreStringToList(movie.getGenre()))
                 .build();
     }
 
-    private static String convertGenreIdsToString(List<Integer> genreIds) {
+    // ✅ 1️⃣ Added: Public parseDate method
+    public static LocalDate parseDate(String dateString) {
+        if (dateString == null || dateString.isEmpty()) {
+            return null;
+        }
+        try {
+            return LocalDate.parse(dateString);
+        } catch (DateTimeParseException e) {
+            System.out.println("⚠️ Invalid date format: " + dateString);
+            return null;
+        }
+    }
+
+    // ✅ 2️⃣ Changed: convertGenreIdsToString to public
+    public static String convertGenreIdsToString(List<Integer> genreIds) {
         return genreIds.stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining(", "));
     }
 
-    private static List<Integer> convertGenreStringToList(String genre) {
-        if (genre == null || genre.isEmpty()) {
-            return List.of();
+    // ✅ 3️⃣ Fixed: convertGenreStringToList to handle empty lists correctly
+    public static List<Integer> convertGenreStringToList(String genre) {
+        if (genre == null || genre.trim().isEmpty() || genre.equals("[]")) {
+            return List.of(); // ✅ Handle empty lists properly
         }
         return Arrays.stream(genre.split(","))
                 .map(String::trim)
-                .map(Integer::parseInt)
+                .filter(s -> !s.isEmpty()) // ✅ Prevent empty values
+                .map(Integer::parseInt) // ✅ Convert to Integer safely
                 .collect(Collectors.toList());
     }
 }

@@ -37,4 +37,9 @@ public class MovieController {
         MovieDTO savedMovie = movieService.addMovie(movieDTO);
         return ResponseEntity.ok(savedMovie);
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<MovieDTO> updateMovie(@PathVariable Long id, @RequestBody MovieDTO movieDTO) {
+        MovieDTO updatedMovie = movieService.updateMovie(id, movieDTO);
+        return ResponseEntity.ok(updatedMovie);
+    }
 }

@@ -85,5 +85,26 @@ public class MovieService {
         movieRepository.save(movie);
         return Utils.convertToDTO(movie);
     }
+    public MovieDTO updateMovie(Long id, MovieDTO movieDTO) {
+        // Check if the movie exists
+        Movie existingMovie = movieRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Movie not found"));
+
+        // Update fields
+        existingMovie.setTitle(movieDTO.getTitle());
+        existingMovie.setOverview(movieDTO.getOverview());
+        existingMovie.setReleaseDate(movieDTO.getReleaseDate());
+        existingMovie.setPosterPath(movieDTO.getPosterPath());
+        existingMovie.setVoteAverage(movieDTO.getVoteAverage());
+        existingMovie.setGenre(movieDTO.getGenreIds() != null ? movieDTO.getGenreIds().toString() : "Unknown");
+
+        // Save the updated movie
+        Movie updatedMovie = movieRepository.save(existingMovie);
+
+        System.out.println("✅ Updated movie: " + updatedMovie.getTitle());
+
+        return Utils.convertToDTO(updatedMovie);
+    }
+
 
 }
