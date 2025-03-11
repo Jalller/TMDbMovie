@@ -41,6 +41,7 @@ public class MovieService {
 
         return response != null ? response.getResults() : List.of();
     }
+
     public void saveMovies(List<MovieDTO> movieDTOs) {
         for (MovieDTO dto : movieDTOs) {
             saveMovie(dto);
@@ -67,12 +68,10 @@ public class MovieService {
         return Movie.builder()
                 .title(dto.getTitle())
                 .overview(dto.getOverview())
-                .releaseDate(dto.getReleaseDate() != null ? java.time.LocalDate.parse(dto.getReleaseDate()) : null)
+                .releaseDate(dto.getReleaseDate()) // ✅ Fixed: Directly assigning LocalDate
                 .posterPath(dto.getPosterPath())
                 .voteAverage(dto.getVoteAverage())
                 .genre(dto.getGenreIds() != null ? dto.getGenreIds().toString() : "Unknown") // Convert genre IDs to String
                 .build();
     }
-
-
 }
