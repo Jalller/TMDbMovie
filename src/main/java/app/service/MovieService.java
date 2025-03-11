@@ -4,7 +4,7 @@ import app.dtos.MovieDTO;
 import app.dtos.MovieResponse;
 import app.entities.Movie;
 import app.repository.MovieRepository;
-import app.utils.Utils;
+import app.mappers.MovieMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -13,7 +13,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class MovieService {
@@ -52,12 +51,12 @@ public class MovieService {
     public MovieDTO getMovieById(Long id) {
         // Fetch movie by ID and return as DTO, otherwise throw 404 error
         return movieRepository.findById(id)
-                .map(Utils::convertToDTO)
+                .map(MovieMapper::convertToDTO)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Movie not found"));
     }
 
     private void saveMovie(MovieDTO movieDTO) {
-        Movie movie = Utils.convertToEntity(movieDTO);
+        Movie movie = MovieMapper.convertToEntity(movieDTO);
         System.out.println("Saving movie to DB: " + movie); // Debugging: Check movie before saving
 
         movieRepository.save(movie);
@@ -79,15 +78,15 @@ public class MovieService {
 
 
     public MovieDTO createMovie(MovieDTO movieDTO) {
-        Movie movie = Utils.convertToEntity(movieDTO);
+        Movie movie = MovieMapper.convertToEntity(movieDTO);
         Movie savedMovie = movieRepository.save(movie);
-        return Utils.convertToDTO(savedMovie);
+        return MovieMapper.convertToDTO(savedMovie);
     }
 
     public MovieDTO addMovie(MovieDTO movieDTO) {
-        Movie movie = Utils.convertToEntity(movieDTO);
+        Movie movie = MovieMapper.convertToEntity(movieDTO);
         movieRepository.save(movie);
-        return Utils.convertToDTO(movie);
+        return MovieMapper.convertToDTO(movie);
     }
 
     public MovieDTO updateMovie(Long id, MovieDTO movieDTO) {
@@ -108,7 +107,7 @@ public class MovieService {
 
         System.out.println("✅ Updated movie: " + updatedMovie.getTitle());
 
-        return Utils.convertToDTO(updatedMovie);
+        return MovieMapper.convertToDTO(updatedMovie);
     }
 
     // ✅ Soft Delete (Marks movie as deleted)

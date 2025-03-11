@@ -1,4 +1,4 @@
-package app.utils;
+package app.mappers;
 
 import app.dtos.MovieDTO;
 import app.entities.Movie;
@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Utils {
+public class MovieMapper {
 
     public static Movie convertToEntity(MovieDTO dto) {
         System.out.println("Converting MovieDTO: " + dto);
