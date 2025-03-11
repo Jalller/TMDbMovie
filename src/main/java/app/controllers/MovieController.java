@@ -32,4 +32,9 @@ public class MovieController {
             return ResponseEntity.status(e.getStatusCode()).body(null);
         }
     }
+    @PostMapping
+    public ResponseEntity<MovieDTO> addMovie(@RequestBody MovieDTO movieDTO) {
+        MovieDTO savedMovie = movieService.addMovie(movieDTO);
+        return ResponseEntity.ok(savedMovie);
+    }
 }

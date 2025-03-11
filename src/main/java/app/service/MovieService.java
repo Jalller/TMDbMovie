@@ -74,4 +74,16 @@ public class MovieService {
                 .genre(dto.getGenreIds() != null ? dto.getGenreIds().toString() : "Unknown") // Convert genre IDs to String
                 .build();
     }
+    public MovieDTO createMovie(MovieDTO movieDTO) {
+        Movie movie = Utils.convertToEntity(movieDTO);
+        Movie savedMovie = movieRepository.save(movie);
+        return Utils.convertToDTO(savedMovie);
+    }
+
+    public MovieDTO addMovie(MovieDTO movieDTO) {
+        Movie movie = Utils.convertToEntity(movieDTO);
+        movieRepository.save(movie);
+        return Utils.convertToDTO(movie);
+    }
+
 }
