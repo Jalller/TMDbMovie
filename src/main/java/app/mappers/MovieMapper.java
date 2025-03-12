@@ -57,14 +57,23 @@ public class MovieMapper {
                 .collect(Collectors.joining(", "));
     }
 
-    private static List<Integer> convertGenreStringToList(String genre) {
-        if (genre == null || genre.trim().isEmpty() || genre.equals("[]")) {
-            return List.of();
-        }
-        return Arrays.stream(genre.split(","))
-                .map(String::trim)
-                .filter(s -> !s.isEmpty())
+    //    private static List<Integer> convertGenreStringToList(String genre) {
+//        if (genre == null || genre.trim().isEmpty() || genre.equals("[]")) {
+//            return List.of();
+//        }
+//        return Arrays.stream(genre.split(","))
+//                .map(String::trim)
+//                .filter(s -> !s.isEmpty())
+//                .map(Integer::parseInt)
+//                .collect(Collectors.toList());
+//    }
+    public static List<Integer> convertGenreStringToList(String genreString) {
+        if (genreString == null || genreString.isEmpty()) return List.of();
+
+        return Arrays.stream(genreString.replaceAll("[\\[\\]]", "").split(","))
+                .filter(s -> s.matches("\\d+"))  // Keep only numeric values
                 .map(Integer::parseInt)
                 .collect(Collectors.toList());
     }
+
 }
